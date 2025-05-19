@@ -1,10 +1,19 @@
 namespace SkillApp;
 using System.IO;
 using Npgsql;
+using System.Collections.Generic;
 
 class SQLConnector
 {
-    public void openConnection()
+
+    NpgsqlConnection connection;
+
+    public SQLConnector()
+    {
+        connection = new NpgsqlConnection();
+    }
+
+    public void MakeConnection()
     {
         StreamReader reader = new StreamReader(".env");
 
@@ -43,13 +52,65 @@ class SQLConnector
                 connStrBuilder.Port = int.Parse(port);
             }
         }
-        catch 
+        catch
         {
             Console.WriteLine(".evn variable port could not be converted to int: port=" + port);
         }
 
 
-        using NpgsqlConnection connection = new NpgsqlConnection(connStrBuilder.ConnectionString);;
+        connection.ConnectionString = connStrBuilder.ConnectionString;
+    }
+    public void CreateTable()
+    {
         connection.Open();
+        // First, checking to see if the table already exists
+        string commandString = "CREATE TABLE IF NOT EXISTS skills (skill TEXT, reminder_time INTEGER, start_time INTEGER)"; // Make the table if it does not exist
+
+        using NpgsqlCommand makeTable = new NpgsqlCommand(commandString, connection);
+
+        makeTable.ExecuteNonQuery();
+
+        connection.Close();
+
+    }
+
+    public void InsertSkill(string skill, int time)
+    {
+        connection.Open();
+        var unixTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        using NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO skills (skill, reminder_time, start_time) VALUES (@skill, @reminder_time, @start_time)", connection);
+        cmd.Parameters.AddWithValue("@skill", skill);
+        cmd.Parameters.AddWithValue("@reminder_time", time);
+        cmd.Parameters.AddWithValue("@start_time", unixTimeStamp);
+
+        int rowsAffected = cmd.ExecuteNonQuery();
+        connection.Close();
+    }
+
+    public List<(string, long)> GetSkills()
+    {
+        var skillsList = new List<(string, long)>();
+
+        connection.Open();
+        var unixTimeStamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        using NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM skills", connection);
+        var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
+        {
+            var skill = reader.GetString(0);
+            var timeElapsed = unixTimeStamp - reader.GetInt32(2);
+            var timeLeft = reader.GetInt32(1) - timeElapsed;
+            if (timeLeft < 0)
+            {
+                timeLeft = 0;
+            }
+            skillsList.Add((skill, timeLeft));
+        }
+
+
+        connection.Close();
+
+        return skillsList;
     }
 }
