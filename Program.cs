@@ -152,18 +152,43 @@ while (true)
             page = "home";
             startMessage = "Skill Manager\n";
         }
-        else if (input == null)
+        else if (input == null || input == "")
         {
 
         }
         else if (input[0] == 'd')
         {
-            
+            var splitInput = input.Split(" ");
+            if (splitInput.Length == 2)
+            {
+                
+                try
+                {
+                    var indexToDelete = int.Parse(splitInput[1]);
+                    if (indexToDelete > 0 && indexToDelete <= skills.Count)
+                    {
+                        var skillToDelete = skills[indexToDelete - 1].Item1;
+                        connector.DeleteSkill(skillToDelete);
+                        startMessage = "Successfully deleted \"" + skillToDelete + "\"\n";
+                    }
+                    else
+                    {
+                        startMessage = "Enter a number shown to delete\n";
+                    }
+                }
+                catch
+                {
+                    startMessage = "Enter a proper delete command\n";
+                }
+                
+            }
         }
         else if (input == "quit" || input == "q")
         {
             break;
         }
+        
+        Console.SetCursorPosition(0, Console.CursorTop - (9 + counter));
     }
     
 

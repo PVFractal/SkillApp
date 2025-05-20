@@ -87,6 +87,16 @@ class SQLConnector
         connection.Close();
     }
 
+    public void DeleteSkill(string skill)
+    {
+        connection.Open();
+        using NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM skills WHERE skill = @skill", connection);
+        cmd.Parameters.AddWithValue("@skill", skill);
+
+        int rowsAffected = cmd.ExecuteNonQuery();
+        connection.Close();
+    }
+
     public List<(string, long)> GetSkills()
     {
         var skillsList = new List<(string, long)>();

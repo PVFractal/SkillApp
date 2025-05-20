@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SkillApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a485d7d807fe9269fb7311a01ad108a26fce0af")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9d5ce6ccac673bc8dc348233e5619c9953df5cdb")]
 [assembly: System.Reflection.AssemblyProductAttribute("SkillApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SkillApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
