@@ -8,11 +8,17 @@ class SQLConnector
 
     NpgsqlConnection connection;
 
+    /// <summary>
+    /// Constructor that initializes the connection field
+    /// </summary>
     public SQLConnector()
     {
         connection = new NpgsqlConnection();
     }
 
+    /// <summary>
+    /// Gives the connection field all it needs to connect to the database
+    /// </summary>
     public void MakeConnection()
     {
         StreamReader reader = new StreamReader(".env");
@@ -60,6 +66,10 @@ class SQLConnector
 
         connection.ConnectionString = connStrBuilder.ConnectionString;
     }
+
+    /// <summary>
+    /// Creates the table skills if it does not exist
+    /// </summary>
     public void CreateTable()
     {
         connection.Open();
@@ -74,6 +84,12 @@ class SQLConnector
 
     }
 
+
+    /// <summary>
+    /// Inserts a new given skill into the table
+    /// </summary>
+    /// <param name="skill">The skill to add</param>
+    /// <param name="time">The amouont of time in seconds between reminders</param>
     public void InsertSkill(string skill, int time)
     {
         connection.Open();
@@ -87,6 +103,10 @@ class SQLConnector
         connection.Close();
     }
 
+    /// <summary>
+    /// Deletes a skill from the table
+    /// </summary>
+    /// <param name="skill">The skill to delete</param>
     public void DeleteSkill(string skill)
     {
         connection.Open();
@@ -97,6 +117,10 @@ class SQLConnector
         connection.Close();
     }
 
+    /// <summary>
+    /// Gets the rows from the skills table, in the form of (<skill>, <time left before notification>)
+    /// </summary>
+    /// <returns>Returns the skills and their time left before notification</returns>
     public List<(string, long)> GetSkills()
     {
         var skillsList = new List<(string, long)>();

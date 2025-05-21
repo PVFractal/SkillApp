@@ -6,8 +6,12 @@ SQLConnector connector = new SQLConnector();
 connector.MakeConnection();
 connector.CreateTable();
 
+// The while loop controls the ui
 
+// Page determines what page of the ui the user is on
 var page = "home";
+
+// startMessage is the message displayed at the top of the "page"
 var startMessage = "Welcome to Skill Manager!\n";
 while (true)
 {
